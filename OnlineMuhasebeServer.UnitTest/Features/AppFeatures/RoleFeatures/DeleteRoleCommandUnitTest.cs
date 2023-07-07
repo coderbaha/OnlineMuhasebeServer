@@ -1,0 +1,39 @@
+﻿using Moq;
+using OnlineMuhasebeServer.Application.Features.RoleFeatures.Commands.DeleteRole;
+using OnlineMuhasebeServer.Application.Services.AppServices;
+using OnlineMuhasebeServer.Domain.AppEntities.Identity;
+using Shouldly;
+
+namespace OnlineMuhasebeServer.UnitTest.Features.AppFeatures.RoleFeatures
+{
+    public sealed class DeleteRoleCommandUnitTest
+    {
+        private readonly Mock<IRoleService> _roleService;
+        public DeleteRoleCommandUnitTest()
+        {
+            _roleService = new();
+        }
+        [Fact]
+        public async Task AppRoleShouldNotBeNull()
+        {
+            _roleService.Setup(
+                x => x.GetById(It.IsAny<string>()))
+                .ReturnsAsync(new AppRole());
+        }
+        [Fact]
+        public async Task DeleteRoleCommandResponseShouldNotBeNull()
+        {
+            var command = new DeleteRoleCommand(
+                Id: "585985c0-4576-4d62-ae67-59a6f72ae906");
+
+            _roleService.Setup(
+                x => x.GetById(It.IsAny<string>()))
+                .ReturnsAsync(new AppRole());
+
+            var handler = new DeleteRoleCommandHandler(_roleService.Object);
+            DeleteRoleCommandResponse response = await handler.Handle(command, default);
+            response.ShouldNotBeNull();
+            response.Message.ShouldNotBeEmpty();
+        }
+    }
+}
